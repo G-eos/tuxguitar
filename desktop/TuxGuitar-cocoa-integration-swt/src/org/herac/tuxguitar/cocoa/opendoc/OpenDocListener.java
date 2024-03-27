@@ -1,21 +1,32 @@
 package org.herac.tuxguitar.cocoa.opendoc;
 
-import org.eclipse.swt.internal.Callback;
+//import org.eclipse.swt.internal.Callback;
 import org.herac.tuxguitar.cocoa.TGCocoa;
 import java.awt.Desktop;
 import java.awt.desktop.OpenFilesEvent;
 import java.awt.desktop.OpenFilesHandler;
-
-private class MyOpenFilesHandler implements OpenFilesHandler {   // should require one more "import" statement?
-    void openFiles(OpenFilesEvent e) {
-        // here, try to print some attribute of e, to check you get the expected info
-        // see https://docs.oracle.com/en/java/javase/20/docs/api/java.desktop/java/awt/desktop/OpenFilesEvent.html
-		System.out.println("MyOpenFilesHandler  !!!!!!!  ()");
-
-    }
-}
+import java.io.File;
+import java.io.IOException;
 
 public class OpenDocListener {
+	
+	private class MyOpenFilesHandler implements OpenFilesHandler {
+	    public void openFiles(OpenFilesEvent e) {
+	        // here, try to print some attribute of e, to check you get the expected info
+	        // see https://docs.oracle.com/en/java/javase/20/docs/api/java.desktop/java/awt/desktop/OpenFilesEvent.html
+			System.out.println("MyOpenFilesHandler  !!!!!!!  ()");
+			for (File f : e.getFiles()) {
+				System.out.printf("file name : %s\n", f.getName());
+				try {
+					System.out.printf("%s\n", f.getCanonicalPath().toString());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+
+	    }
+	}
+
 	
 	public static final long sel_application_openFile_ = TGCocoa.sel_registerName("application:openFile:");
 	
@@ -31,10 +42,14 @@ public class OpenDocListener {
 
 
 	public void init() throws Throwable{
-		Desktop.getDesktop().setOpenFileHandler(new MyOpenFilesHandler());
+		if (Desktop.isDesktopSupported()) {
+			System.out.println("desktop is supported, setting file handler");
+			Desktop.getDesktop().setOpenFileHandler(new MyOpenFilesHandler());
+		}
 
 		System.out.println("Test INIT OK");
-
+		
+		/*
 		long cls = TGCocoa.objc_lookUpClass ("SWTApplicationDelegate");
 		if( cls != 0 ){
 			Callback callback = TGCocoa.newCallback( this , "callbackProc64" , "callbackProc32", 4 );
@@ -44,7 +59,7 @@ public class OpenDocListener {
 				TGCocoa.class_addMethod(cls, sel_application_openFile_, callbackProc , "B:@@");
 				System.out.println("Test INit OK");
 			}
-		}
+		}*/
 
 		
 	}
