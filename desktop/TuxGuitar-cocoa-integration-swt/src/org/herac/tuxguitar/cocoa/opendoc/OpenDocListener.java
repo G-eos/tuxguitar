@@ -2,6 +2,9 @@ package org.herac.tuxguitar.cocoa.opendoc;
 
 import org.eclipse.swt.internal.Callback;
 import org.herac.tuxguitar.cocoa.TGCocoa;
+import java.awt.Desktop;
+import java.awt.desktop.OpenFilesEvent;
+import java.awt.desktop.OpenFilesHandler;
 
 public class OpenDocListener {
 	
@@ -13,19 +16,28 @@ public class OpenDocListener {
 		this.enabled = false;
 	}
 	
+	public void OpenMyAppFilesHandler(OpenFilesEvent e) {
+		System.out.println("OpenFileHandler()");
+	 }
+
+
 	public void init() throws Throwable{
 		long cls = TGCocoa.objc_lookUpClass ("SWTApplicationDelegate");
 		if( cls != 0 ){
 			Callback callback = TGCocoa.newCallback( this , "callbackProc64" , "callbackProc32", 4 );
-			
+			System.out.println("Test INit");
 			long callbackProc = TGCocoa.getCallbackAddress( callback );
 			if( callbackProc != 0 ){
 				TGCocoa.class_addMethod(cls, sel_application_openFile_, callbackProc , "B:@@");
+				System.out.println("Test INit OK");
 			}
 		}
+
+		Desktop.getDesktop().setOpenFileHandler(this::OpenMyAppFilesHandler);
 	}
 	
 	public long callbackProc(long id, long sel,long arg0, long arg1) {
+		System.out.println("Test callbackProc");
 		if( this.isEnabled() ){
 			if (sel == sel_application_openFile_) {
 				try {
@@ -42,18 +54,22 @@ public class OpenDocListener {
 	}
 	
 	public long callbackProc64(long id, long sel,long arg0, long arg1) {
+		System.out.println("Test callbackProc64");
 		return this.callbackProc(id, sel, arg0, arg1);
 	}
 	
 	public int callbackProc32(int id, int sel,int arg0, int arg1) {
+		System.out.println("Test callbackProc32");
 		return (int)this.callbackProc( (long)id, (long)sel, (long)arg0, (long)arg1);
 	}
 	
 	public boolean isEnabled() {
+		System.out.println("Test isEnabled");
+
 		return this.enabled;
 	}
 	
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {	
 		this.enabled = enabled;
 	}
 }
