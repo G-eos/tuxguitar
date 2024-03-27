@@ -6,6 +6,15 @@ import java.awt.Desktop;
 import java.awt.desktop.OpenFilesEvent;
 import java.awt.desktop.OpenFilesHandler;
 
+private class MyOpenFilesHandler implements OpenFilesHandler {   // should require one more "import" statement?
+    void openFiles(OpenFilesEvent e) {
+        // here, try to print some attribute of e, to check you get the expected info
+        // see https://docs.oracle.com/en/java/javase/20/docs/api/java.desktop/java/awt/desktop/OpenFilesEvent.html
+		System.out.println("MyOpenFilesHandler  !!!!!!!  ()");
+
+    }
+}
+
 public class OpenDocListener {
 	
 	public static final long sel_application_openFile_ = TGCocoa.sel_registerName("application:openFile:");
@@ -22,6 +31,10 @@ public class OpenDocListener {
 
 
 	public void init() throws Throwable{
+		Desktop.getDesktop().setOpenFileHandler(new MyOpenFilesHandler());
+
+		System.out.println("Test INIT OK");
+
 		long cls = TGCocoa.objc_lookUpClass ("SWTApplicationDelegate");
 		if( cls != 0 ){
 			Callback callback = TGCocoa.newCallback( this , "callbackProc64" , "callbackProc32", 4 );
@@ -33,7 +46,7 @@ public class OpenDocListener {
 			}
 		}
 
-		Desktop.getDesktop().setOpenFileHandler(this::OpenMyAppFilesHandler);
+		
 	}
 	
 	public long callbackProc(long id, long sel,long arg0, long arg1) {
