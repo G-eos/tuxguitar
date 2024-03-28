@@ -1,7 +1,11 @@
 package org.herac.tuxguitar.cocoa.opendoc;
 
+import org.herac.tuxguitar.app.TuxGuitar;
+import org.herac.tuxguitar.app.action.impl.file.TGReadURLAction;
 //import org.eclipse.swt.internal.Callback;
-import org.herac.tuxguitar.cocoa.TGCocoa;
+//import org.herac.tuxguitar.cocoa.TGCocoa;
+import org.herac.tuxguitar.editor.action.TGActionProcessor;
+
 import java.awt.Desktop;
 import java.awt.desktop.OpenFilesEvent;
 import java.awt.desktop.OpenFilesHandler;
@@ -12,13 +16,25 @@ public class OpenDocListener {
 	
 	private class MyOpenFilesHandler implements OpenFilesHandler {
 	    public void openFiles(OpenFilesEvent e) {
-	        // here, try to print some attribute of e, to check you get the expected info
-	        // see https://docs.oracle.com/en/java/javase/20/docs/api/java.desktop/java/awt/desktop/OpenFilesEvent.html
 			System.out.println("MyOpenFilesHandler  !!!!!!!  ()");
+			
+			// try to open 1st file of list
+			if (!e.getFiles().isEmpty()) {
+				TuxGuitar.getInstance().getPlayer().reset();
+				TGActionProcessor tgActionProcessor = new TGActionProcessor(TuxGuitar.getInstance().getContext(), TGReadURLAction.NAME);
+				try {
+					tgActionProcessor.setAttribute(TGReadURLAction.ATTRIBUTE_URL, e.getFiles().get(0).toURI().toURL());
+					tgActionProcessor.process();
+				} catch (Throwable e1) {
+					e1.printStackTrace();
+				}
+
+			}
+			
 			for (File f : e.getFiles()) {
 				System.out.printf("file name : %s\n", f.getName());
 				try {
-					System.out.printf("%s\n", f.getCanonicalPath().toString());
+					System.out.printf("canonical path : %s\n", f.getCanonicalPath().toString());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -28,7 +44,7 @@ public class OpenDocListener {
 	}
 
 	
-	public static final long sel_application_openFile_ = TGCocoa.sel_registerName("application:openFile:");
+	//public static final long sel_application_openFile_ = TGCocoa.sel_registerName("application:openFile:");
 	
 	private boolean enabled;
 	
@@ -63,7 +79,7 @@ public class OpenDocListener {
 
 		
 	}
-	
+	/*
 	public long callbackProc(long id, long sel,long arg0, long arg1) {
 		System.out.println("Test callbackProc");
 		if( this.isEnabled() ){
@@ -100,4 +116,5 @@ public class OpenDocListener {
 	public void setEnabled(boolean enabled) {	
 		this.enabled = enabled;
 	}
+	*/
 }
