@@ -38,10 +38,10 @@ jobs:
           mvn install:install-file -Dfile=/usr/local/share/java/classes/swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.gtk.freebsd -Dpackaging=jar -Dversion=4.21
           cd desktop/build-scripts/tuxguitar-freebsd-swt && mvn -e clean verify -P native-modules
 
-  #  - uses: actions/upload-artifact@v4
-  #    with:
-  #      name: Package-FreeBSD
-  #      path: desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Package-FreeBSD
+        path: desktop/build-scripts/tuxguitar-freebsd-swt/target/tuxguitar-9.99-SNAPSHOT-*
     
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
