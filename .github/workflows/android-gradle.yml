@@ -16,7 +16,7 @@ on: [push]
 #    branches: [ "master" ]
 
 jobs:
-  build-ubuntu-latest:
+  build-android:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
