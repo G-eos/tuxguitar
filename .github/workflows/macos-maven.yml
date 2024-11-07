@@ -19,7 +19,8 @@ jobs:
   build-macOS:
     strategy:
       matrix:
-          os: [macos-12, macos-13]
+          # macos-14 means executed on ARM Mac thus build ARM binaries
+          os: [macos-12, macos-13, macos-14]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
