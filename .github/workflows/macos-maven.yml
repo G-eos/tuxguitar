@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'temurin'
+        distribution: 'temurin ki'
         cache: maven
         java-package: jdk
     - name : Download SWT
@@ -37,7 +37,7 @@ jobs:
     - name: Build with Maven
       run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
     - name: Where are we 
-      run: which java && ls -alh `which java` && ls -alhR `which java`/../
+      run: which java && ls -alh `which java` && ls -alhR `which java | sed -e 's/java//g`../
     - uses: actions/upload-artifact@v4
       with:
         name: Package-MacOS-${{ matrix.os }}
