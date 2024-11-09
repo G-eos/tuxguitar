@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '21'
-        distribution: 'temurin ki'
+        distribution: 'temurin'
         cache: maven
         java-package: jdk
     - name : Download SWT
