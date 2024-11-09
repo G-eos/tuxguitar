@@ -29,7 +29,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-        java-package: jre
+        java-package: jdk
     - name : Download SWT
       run: curl -o swt-4.14-cocoa-macosx-`uname -m`.zip https://archive.eclipse.org/eclipse/downloads/drops4/R-4.14-201912100610/swt-4.14-cocoa-macosx-`uname -m`.zip
     - name : install SWT
