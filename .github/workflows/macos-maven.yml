@@ -37,7 +37,7 @@ jobs:
     - name: Build with Maven
       run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
     - name: Where are we 
-      run: which java && ls -alh `which java` && ls -alhR `which java`/..
+      run: which java && ls -alh `which java` && ls -alhR `which java`/../
     - uses: actions/upload-artifact@v4
       with:
         name: Package-MacOS-${{ matrix.os }}
