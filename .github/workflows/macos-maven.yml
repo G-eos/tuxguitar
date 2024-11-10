@@ -30,18 +30,18 @@ jobs:
         distribution: 'temurin'
         cache: maven
         java-package: jdk
-    - name : Download SWT
-      run: curl -o swt-4.14-cocoa-macosx-`uname -m`.zip https://archive.eclipse.org/eclipse/downloads/drops4/R-4.14-201912100610/swt-4.14-cocoa-macosx-`uname -m`.zip
-    - name : install SWT
-      run: mkdir swt-4.14-cocoa-macosx-`uname -m` && cd swt-4.14-cocoa-macosx-`uname -m` && unzip ../swt-4.14-cocoa-macosx-`uname -m`.zip && mvn install:install-file -Dfile=swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.cocoa.macosx -Dpackaging=jar -Dversion=4.14
-    - name: Build with Maven
-      run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
+  #  - name : Download SWT
+  #    run: curl -o swt-4.14-cocoa-macosx-`uname -m`.zip https://archive.eclipse.org/eclipse/downloads/drops4/R-4.14-201912100610/swt-4.14-cocoa-macosx-`uname -m`.zip
+  #  - name : install SWT
+  #    run: mkdir swt-4.14-cocoa-macosx-`uname -m` && cd swt-4.14-cocoa-macosx-`uname -m` && unzip ../swt-4.14-cocoa-macosx-`uname -m`.zip && mvn install:install-file -Dfile=swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.cocoa.macosx -Dpackaging=jar -Dversion=4.14
+  #  - name: Build with Maven
+  #    run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
     - name: Where are we 
-      run: which java && ls -alh `which java` && ls -alhR `which java | sed -e 's/java//g`../
-    - uses: actions/upload-artifact@v4
-      with:
-        name: Package-MacOS-${{ matrix.os }}
-        path: desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
+      run: which java && ls -alhR `which java | sed 's/java//g`../
+  #  - uses: actions/upload-artifact@v4
+   #   with:
+   #     name: Package-MacOS-${{ matrix.os }}
+    #    path: desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
     
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
