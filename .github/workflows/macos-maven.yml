@@ -30,9 +30,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name : Download SWT
+      id: download-swt
       uses: ./.github/actions/download-swt
-        with:
-          swt_version: '4.14'
+      with:
+        swt_version: '4.14'  # Set the SWT version here
     - name : install SWT
       run: cd ${{ steps.download-swt.outputs.dest_dir }} && mvn install:install-file -Dfile=swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.cocoa.macosx -Dpackaging=jar -Dversion=${{ inputs.swt_version }}
     - name: Build with Maven
