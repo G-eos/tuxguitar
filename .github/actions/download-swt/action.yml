@@ -15,6 +15,7 @@ runs:
   steps:
     - name: Set up script variables
       id: vars
+      shell: bash
       run: |
         SWT_VERSION="${{ inputs.swt_version }}"
 
@@ -52,10 +53,17 @@ runs:
         echo "::set-output name=downloaded_file::$DOWNLOADED_FILE"
 
     - name: Download SWT Library
+      shell: bash
       run: |
         mkdir -p "${{ steps.vars.outputs.dest_dir }}"
         curl -L -o "${{ steps.vars.outputs.downloaded_file }}" "${{ steps.vars.outputs.file_url }}"
 
     - name: Extract SWT Archive
+      shell: bash
       run: |
         unzip "${{ steps.vars.outputs.downloaded_file }}" -d "${{ steps.vars.outputs.dest_dir }}"
+
+    - name: Log SWT Version
+      shell: bash
+      run: |
+        echo "Downloaded SWT version: ${{ inputs.swt_version }}"
