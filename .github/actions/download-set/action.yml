@@ -1,0 +1,61 @@
+name: "Download SWT Library"
+description: "Download a specific version of the SWT library"
+inputs:
+  swt_version:
+    description: "SWT version to download (example: 4.22)"
+    required: true
+    default: "4.22"
+outputs:
+  dest_dir:
+    description: "Destination directory for the SWT library"
+  downloaded_file:
+    description: "Path to the downloaded SWT ZIP file"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up script variables
+      id: vars
+      run: |
+        SWT_VERSION="${{ inputs.swt_version }}"
+
+        # Detect the OS of the GitHub runner
+        case "$(uname -s)" in
+          Linux*) OS="linux";;
+          Darwin*) OS="macosx";;
+          CYGWIN*|MINGW*|MSYS*) OS="win32";;
+          *) echo "Unsupported operating system"; exit 1;;
+        esac
+
+        # Detect the architecture of the GitHub runner
+        case "$(uname -m)" in
+          x86_64) ARCH="x86_64";;
+          i*86) ARCH="x86";;
+          arm64|aarch64) ARCH="aarch64";;
+          *) echo "Unsupported architecture"; exit 1;;
+        esac
+
+        # Base download URL to retrieve the date
+        BASE_URL="https://download.eclipse.org/swt/downloads/drops/R-${SWT_VERSION}"
+        DATE=$(curl -s "$BASE_URL" | grep -oP "(?<=R-${SWT_VERSION}-)\d+" | head -1)
+
+        if [ -z "$DATE" ]; then
+          echo "Error: Could not find the date for SWT version ${SWT_VERSION}."
+          exit 1
+        fi
+
+        FILE_URL="${BASE_URL}-${DATE}/org.eclipse.swt.${OS}.${ARCH}.zip"
+        DEST_DIR="swt-${SWT_VERSION}"
+        DOWNLOADED_FILE="${DEST_DIR}/swt-${SWT_VERSION}.zip"
+        
+        echo "::set-output name=file_url::$FILE_URL"
+        echo "::set-output name=dest_dir::$DEST_DIR"
+        echo "::set-output name=downloaded_file::$DOWNLOADED_FILE"
+
+    - name: Download SWT Library
+      run: |
+        mkdir -p "${{ steps.vars.outputs.dest_dir }}"
+        curl -L -o "${{ steps.vars.outputs.downloaded_file }}" "${{ steps.vars.outputs.file_url }}"
+
+    - name: Extract SWT Archive
+      run: |
+        unzip "${{ steps.vars.outputs.downloaded_file }}" -d "${{ steps.vars.outputs.dest_dir }}"
