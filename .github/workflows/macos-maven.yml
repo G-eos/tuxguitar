@@ -36,21 +36,24 @@ jobs:
       run: mkdir swt-4.14-cocoa-macosx-`uname -m` && cd swt-4.14-cocoa-macosx-`uname -m` && unzip ../swt-4.14-cocoa-macosx-`uname -m`.zip && mvn install:install-file -Dfile=swt.jar -DgroupId=org.eclipse.swt -DartifactId=org.eclipse.swt.cocoa.macosx -Dpackaging=jar -Dversion=4.14
     - name: Build with Maven
       run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
-    - name: Add JRE into Built app
-      run: mkdir -p desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/Contents/MacOS/jre && cp -ai /usr/local/opt/openjdk/* desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/Contents/MacOS/jre
 #    - name: Where are we 
 #      run: which java && ls -alhR /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.5-11.0/x64/Contents/Home/ && ls -alhR `which java | sed 's/java//g'`../
-#    - name: Install brew
-#      run: export NONINTERACTIVE=1 && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-#    # install same JRE as done for packaging TuxGuitar by script
-#    - name: install java from HomeBrew
-#      run:  export NONINTERACTIVE=1 && brew install openjdk
+    - name: Install brew
+      run: export NONINTERACTIVE=1 && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # install same JRE as done for packaging TuxGuitar by script
+    - name: install java from HomeBrew
+      run:  export NONINTERACTIVE=1 && brew install openjdk
 #    - name: List homebrew jre
 #      run: ls -alhR /usr/local/opt/openjdk/
+    - name: Add JRE into Built app
+      run: mkdir -p desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/Contents/MacOS/jre && cp -ai /usr/local/opt/openjdk/* desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/Contents/MacOS/jre
+    - name: Build a tar (to avoid link loss)
+      run: tar -cvf tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app.tar desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app/
     - uses: actions/upload-artifact@v4
       with:
         name: Package-MacOS-${{ matrix.os }}
-        path: desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
+        path: tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app.tar
+#        path: desktop/build-scripts/tuxguitar-macosx-swt-cocoa/target/tuxguitar-9.99-SNAPSHOT-macosx-swt-cocoa.app
     
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     ##- name: Update dependency graph
