@@ -19,7 +19,7 @@ jobs:
   build-macOS:
     strategy:
       matrix:
-          os: [macos-12, macos-13]
+          os: [macos-13]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -38,6 +38,8 @@ jobs:
   #    run: cd desktop/build-scripts/tuxguitar-macosx-swt-cocoa && mvn -e clean verify
     - name: Where are we 
       run: which java && ls -alhR /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.5-11.0/x64/Contents/Home/ && ls -alhR `which java | sed 's/java//g'`../
+    - name: Install brew
+      run export NONINTERACTIVE=1 && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   #  - uses: actions/upload-artifact@v4
    #   with:
    #     name: Package-MacOS-${{ matrix.os }}
