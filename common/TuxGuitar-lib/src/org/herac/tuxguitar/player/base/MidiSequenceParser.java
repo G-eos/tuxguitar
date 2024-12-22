@@ -112,8 +112,13 @@ public class MidiSequenceParser {
 		
 		this.addDefaultMessages(helper, this.song);
 		
+		boolean existsSoloTrack = false;
 		for (int i = 0; i < this.song.countTracks(); i++) {
-			addTrack(helper, this.song.getTrack(i));
+			existsSoloTrack |= this.song.getTrack(i).isSolo();
+		}
+		for (int i = 0; i < this.song.countTracks(); i++) {
+			TGTrack track = this.song.getTrack(i);
+			addTrack(helper, track, !track.isMute() && (!existsSoloTrack || track.isSolo()));
 		}
 		sequence.notifyFinish();
 	}
@@ -131,7 +136,7 @@ public class MidiSequenceParser {
 		}
 	}
 	
-	private void addTrack(MidiSequenceHelper sh, TGTrack track) {
+	private void addTrack(MidiSequenceHelper sh, TGTrack track, boolean shallPlay) {
 		TGChannel tgChannel = this.songManager.getChannel(this.song, track.getChannelId() );
 		if( tgChannel != null ){
 			TGMeasure previous = null;
@@ -149,9 +154,10 @@ public class MidiSequenceParser {
 					addTempo(sh,measure, previous, mh.getMove());
 					addMetronome(sh,measure.getHeader(), mh.getMove() );
 				}
-				//agrego los pulsos
-				addBeats( sh, tgChannel, track, measure, mIndex, mh.getMove() );
-				
+				if (shallPlay) {
+					//agrego los pulsos
+					addBeats( sh, tgChannel, track, measure, mIndex, mh.getMove() );
+				}
 				previous = measure;
 			}
 		}
@@ -191,8 +197,8 @@ public class MidiSequenceParser {
 						addFadeIn(sh,track.getNumber(), start, duration, tgChannel.getVolume(), channel);
 					}
 					//---Grace---
-					if(note.getEffect().isGrace() && !percussionChannel ){
-						bendMode = true;
+					if(note.getEffect().isGrace()) {
+						bendMode = !percussionChannel;
 						int graceKey = track.getOffset() + note.getEffect().getGrace().getFret() + ((TGString)track.getStrings().get(note.getString() - 1)).getValue();
 						int graceLength = note.getEffect().getGrace().getDurationTime();
 						int graceVelocity = note.getEffect().getGrace().getDynamic();
